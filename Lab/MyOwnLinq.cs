@@ -1,38 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
+using Lab.Entities;
 
 namespace Lab
 {
     public static class MyOwnLinq
     {
-        public static List<TSource> JoeyWhere<TSource>(this List<TSource> source,
+        public static IEnumerable<TSource> JoeyWhere<TSource>(this IEnumerable<TSource> source,
             Predicate<TSource> predicate)
         {
-            var result = new List<TSource>();
             foreach (var product in source)
             {
                 if (predicate(product))
                 {
-                    result.Add(product);
+                    yield return product;
                 }
             }
-
-            return result;
         }
-        public static List<TSource> JoeyWhere<TSource>(this List<TSource> source,
+
+        public static IEnumerable<TSource> JoeyWhere<TSource>(this List<TSource> source,
             Func<TSource, int, bool> predicate)
         {
-            var result = new List<TSource>();
             foreach (var product in source)
             {
                 var index = source.IndexOf(product);
                 if (predicate(product, index))
                 {
-                    result.Add(product);
+                    yield return product;
                 }
             }
+        }
 
-            return result;
+        public static IEnumerable<TReturn> JoeySelect<TSource, TReturn>(this IEnumerable<TSource> sources,
+            Func<TSource, TReturn> selector)
+        {
+            foreach (var item in sources)
+            {
+                yield return selector(item);
+            }
+        }
+
+        public static IEnumerable<TReturn> JoeySelect<TSource, TReturn>(this IEnumerable<TSource> sources,
+            Func<TSource, int, TReturn> selector)
+        {
+            var index = 1;
+            foreach (var item in sources)
+            {
+                yield return selector(item, index++);
+            }
+        }
+
+        public static IEnumerable<Employee> JoeyTake(this IEnumerable<Employee> employees, int takeCount)
+        {
+            var index = 0;
+            var enumerator = employees.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var item = enumerator.Current;
+                if (index++ < takeCount)
+                {
+                    yield return item;
+                }
+            }
         }
     }
 }

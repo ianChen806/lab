@@ -5,6 +5,7 @@ using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lab;
 
 namespace CSharpAdvanceDesignTests
 {
@@ -16,7 +17,7 @@ namespace CSharpAdvanceDesignTests
         {
             var urls = GetUrls();
 
-            var actual = JoeySelect(urls, item => item.Replace("http:", "https:"));
+            var actual = urls.JoeySelect(item => item.Replace("http:", "https:"));
             var expected = new List<string>
             {
                 "https://tw.yahoo.com",
@@ -33,7 +34,7 @@ namespace CSharpAdvanceDesignTests
         {
             var urls = GetUrls();
 
-            var actual = JoeySelect(urls, item => item.Replace("http:", "https:") + "/a");
+            var actual = urls.JoeySelect(item => item.Replace("http:", "https:") + "/a");
             var expected = new List<string>
             {
                 "https://tw.yahoo.com/a",
@@ -63,7 +64,7 @@ namespace CSharpAdvanceDesignTests
                 "David-Chen",
             };
 
-            var actual = JoeySelect(employees, e => $"{e.FirstName}-{e.LastName}");
+            var actual = employees.JoeySelect(e => $"{e.FirstName}-{e.LastName}");
             expected.ToExpectedObject().ShouldMatch(actual);
         }
 
@@ -78,7 +79,7 @@ namespace CSharpAdvanceDesignTests
             };
             var expected = new[] { 8, 5, 9 };
 
-            var actual = JoeySelect(employees, e => $"{e.FirstName}{e.LastName}".Length);
+            var actual = employees.JoeySelect(e => $"{e.FirstName}{e.LastName}".Length);
             expected.ToExpectedObject().ShouldMatch(actual);
         }
 
@@ -98,29 +99,31 @@ namespace CSharpAdvanceDesignTests
                 "3.David-Chen",
             };
 
-            var actual = JoeySelect(employees, (e, i) => $"{i}.{e.FirstName}-{e.LastName}");
+            var actual = employees.JoeySelect((e, i) => $"{i}.{e.FirstName}-{e.LastName}");
             expected.ToExpectedObject().ShouldMatch(actual);
         }
 
-        private IEnumerable<TReturn> JoeySelect<TSource, TReturn>(IEnumerable<TSource> sources,
-            Func<TSource, TReturn> selector)
+        [Test]
+        public void get_full_name_with_seqNo_test()
         {
-            foreach (var item in sources)
+            var employees = new List<Employee>
             {
-                yield return selector(item);
-            }
-        }
-
-        private IEnumerable<TReturn> JoeySelect<TSource, TReturn>(IEnumerable<TSource> sources,
-            Func<TSource, int, TReturn> selector)
-        {
-            var index = 1;
-            foreach (var item in sources)
+                new Employee {FirstName = "Joey", LastName = "Chen"},
+                new Employee {FirstName = "Tom", LastName = "Li"},
+                new Employee {FirstName = "David", LastName = "Chen"}
+            };
+            var expected = new[]
             {
-                yield return selector(item, index++);
-            }
-        }
+                "1.Joey-Chen",
+                "2.Tom-Li",
+                "3.David-Chen",
+            };
 
+            var actual = employees
+                .JoeyWhere(r => r.FirstName.Length > 3)
+                .JoeySelect((e, i) => $"{i}.{e.FirstName}-{e.LastName}");
+            expected.ToExpectedObject().ShouldMatch(actual);
+        }
         private static IEnumerable<string> GetUrls()
         {
             yield return "http://tw.yahoo.com";
@@ -129,7 +132,7 @@ namespace CSharpAdvanceDesignTests
             yield return "http://github.com";
         }
 
-        private static List<Employee> GetEmployees()
+        private static IEnumerable<Employee> GetEmployees()
         {
             return new List<Employee>
             {
