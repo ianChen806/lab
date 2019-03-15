@@ -1,4 +1,5 @@
-﻿using ExpectedObjects;
+﻿using System;
+using ExpectedObjects;
 using Lab.Entities;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
@@ -15,7 +16,7 @@ namespace CSharpAdvanceDesignTests
         {
             var urls = GetUrls();
 
-            var actual = JoeySelect(urls);
+            var actual = JoeySelect(urls, item => item.Replace("http:", "https:"));
             var expected = new List<string>
             {
                 "https://tw.yahoo.com",
@@ -27,9 +28,29 @@ namespace CSharpAdvanceDesignTests
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
 
-        private IEnumerable<string> JoeySelect(IEnumerable<string> urls)
+        [Test]
+        public void replace_http_to_https_append()
         {
-            throw new System.NotImplementedException();
+            var urls = GetUrls();
+
+            var actual = JoeySelect(urls, item => item.Replace("http:", "https:") + "/a");
+            var expected = new List<string>
+            {
+                "https://tw.yahoo.com/a",
+                "https://facebook.com/a",
+                "https://twitter.com/a",
+                "https://github.com/a",
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
+
+        private IEnumerable<string> JoeySelect(IEnumerable<string> sources, Func<string, string> selector)
+        {
+            foreach (var item in sources)
+            {
+                yield return selector(item);
+            }
         }
 
         private static IEnumerable<string> GetUrls()

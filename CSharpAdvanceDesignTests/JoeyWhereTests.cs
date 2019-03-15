@@ -1,10 +1,10 @@
 ﻿using ExpectedObjects;
+using Lab;
 using Lab.Entities;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using System.Linq;
-using Lab;
 
 namespace CSharpAdvanceDesignTests
 {
@@ -58,8 +58,6 @@ namespace CSharpAdvanceDesignTests
                 new Product { Id = 4, Cost = 41, Price = 410, Supplier = "Odd-e" }
             );
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
-
-
         }
 
         [Test]
@@ -71,6 +69,19 @@ namespace CSharpAdvanceDesignTests
             var expected = new List<string> { "bb", "ccc" };
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
+
+        [Test]
+        public void find_odd_names()
+        {
+            var names = new List<string> { "Joey", "Cash", "William", "Sam", "Brian", "Jessica" };
+            var actual = names.JoeyWhere((n, i) => i % 2 == 0);
+            var expected = new[]
+            {
+                "Joey", "William", "Brian"
+            };
+            expected.ToExpectedObject().ShouldMatch(actual);
+        }
+
         private static List<Product> GivenExpected(params Product[] expected)
         {
             return expected.ToList();

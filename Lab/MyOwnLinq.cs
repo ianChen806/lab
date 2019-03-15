@@ -5,12 +5,28 @@ namespace Lab
 {
     public static class MyOwnLinq
     {
-        public static List<T> JoeyWhere<T>(this List<T> products, Func<T, bool> predicate)
+        public static List<TSource> JoeyWhere<TSource>(this List<TSource> source,
+            Predicate<TSource> predicate)
         {
-            var result = new List<T>();
-            foreach (var product in products)
+            var result = new List<TSource>();
+            foreach (var product in source)
             {
                 if (predicate(product))
+                {
+                    result.Add(product);
+                }
+            }
+
+            return result;
+        }
+        public static List<TSource> JoeyWhere<TSource>(this List<TSource> source,
+            Func<TSource, int, bool> predicate)
+        {
+            var result = new List<TSource>();
+            foreach (var product in source)
+            {
+                var index = source.IndexOf(product);
+                if (predicate(product, index))
                 {
                     result.Add(product);
                 }
