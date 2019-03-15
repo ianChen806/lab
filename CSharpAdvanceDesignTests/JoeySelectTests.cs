@@ -1,8 +1,8 @@
-﻿using System;
-using ExpectedObjects;
+﻿using ExpectedObjects;
 using Lab.Entities;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,13 +43,81 @@ namespace CSharpAdvanceDesignTests
             };
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
+
+            Assert.AreEqual(expected, actual);
         }
 
-        private IEnumerable<string> JoeySelect(IEnumerable<string> sources, Func<string, string> selector)
+        [Test]
+        public void get_full_name()
+        {
+            var employees = new List<Employee>
+            {
+                new Employee {FirstName = "Joey", LastName = "Chen"},
+                new Employee {FirstName = "Tom", LastName = "Li"},
+                new Employee {FirstName = "David", LastName = "Chen"}
+            };
+            var expected = new[]
+            {
+                "Joey-Chen",
+                "Tom-Li",
+                "David-Chen",
+            };
+
+            var actual = JoeySelect(employees, e => $"{e.FirstName}-{e.LastName}");
+            expected.ToExpectedObject().ShouldMatch(actual);
+        }
+
+        [Test]
+        public void get_full_name_Length()
+        {
+            var employees = new List<Employee>
+            {
+                new Employee {FirstName = "Joey", LastName = "Chen"},
+                new Employee {FirstName = "Tom", LastName = "Li"},
+                new Employee {FirstName = "David", LastName = "Chen"}
+            };
+            var expected = new[] { 8, 5, 9 };
+
+            var actual = JoeySelect(employees, e => $"{e.FirstName}{e.LastName}".Length);
+            expected.ToExpectedObject().ShouldMatch(actual);
+        }
+
+        [Test]
+        public void get_full_name_with_seqNo()
+        {
+            var employees = new List<Employee>
+            {
+                new Employee {FirstName = "Joey", LastName = "Chen"},
+                new Employee {FirstName = "Tom", LastName = "Li"},
+                new Employee {FirstName = "David", LastName = "Chen"}
+            };
+            var expected = new[]
+            {
+                "1.Joey-Chen",
+                "2.Tom-Li",
+                "3.David-Chen",
+            };
+
+            var actual = JoeySelect(employees, (e, i) => $"{i}.{e.FirstName}-{e.LastName}");
+            expected.ToExpectedObject().ShouldMatch(actual);
+        }
+
+        private IEnumerable<TReturn> JoeySelect<TSource, TReturn>(IEnumerable<TSource> sources,
+            Func<TSource, TReturn> selector)
         {
             foreach (var item in sources)
             {
                 yield return selector(item);
+            }
+        }
+
+        private IEnumerable<TReturn> JoeySelect<TSource, TReturn>(IEnumerable<TSource> sources,
+            Func<TSource, int, TReturn> selector)
+        {
+            var index = 1;
+            foreach (var item in sources)
+            {
+                yield return selector(item, index++);
             }
         }
 
