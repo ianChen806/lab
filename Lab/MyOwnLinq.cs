@@ -63,5 +63,21 @@ namespace Lab
                 }
             }
         }
+
+        public static IEnumerable<Employee> JoeySkip(this IEnumerable<Employee> employees, int skipCount)
+        {
+            int index = 0;
+            var enumerator = employees.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var item = enumerator.Current;
+                if (index >= skipCount)
+                {
+                    yield return item;
+                }
+
+                index++;
+            }
+        }
     }
 }
