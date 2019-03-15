@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Lab.Entities;
+using System;
 using System.Collections.Generic;
-using Lab.Entities;
 
 namespace Lab
 {
@@ -61,10 +61,14 @@ namespace Lab
                 {
                     yield return item;
                 }
+                else
+                {
+                    yield break;
+                }
             }
         }
 
-        public static IEnumerable<Employee> JoeySkip(this IEnumerable<Employee> employees, int skipCount)
+        public static IEnumerable<TSource> JoeySkip<TSource>(this IEnumerable<TSource> employees, int skipCount)
         {
             int index = 0;
             var enumerator = employees.GetEnumerator();
