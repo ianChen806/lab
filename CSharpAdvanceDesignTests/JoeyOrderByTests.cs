@@ -3,11 +3,22 @@ using Lab.Entities;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace CSharpAdvanceDesignTests
 {
+    public class CombineKeyComparer
+    {
+        public CombineKeyComparer(Func<Employee, string> keySelector, IComparer<string> keyComparer)
+        {
+            KeySelector = keySelector;
+            KeyComparer = keyComparer;
+        }
+
+        public Func<Employee, string> KeySelector { get; private set; }
+        public IComparer<string> KeyComparer { get; private set; }
+    }
+
     [TestFixture]
     public class JoeyOrderByTests
     {
@@ -47,7 +58,9 @@ namespace CSharpAdvanceDesignTests
                 new Employee {FirstName = "Joey", LastName = "Chen"},
             };
 
-            var actual = JoeyOrderByLastName(employees, element => element.LastName, Comparer<string>.Default, element1 => element1.FirstName, Comparer<string>.Default);
+            var firstComparer = new CombineKeyComparer(element => element.LastName, Comparer<string>.Default);
+            var secondComparer = new CombineKeyComparer(element1 => element1.FirstName, Comparer<string>.Default);
+            var actual = JoeyOrderByLastName(employees, firstComparer, secondComparer);
 
             var expected = new[]
             {
@@ -61,8 +74,7 @@ namespace CSharpAdvanceDesignTests
         }
 
         private IEnumerable<Employee> JoeyOrderByLastName(IEnumerable<Employee> employees,
-            Func<Employee, string> firstKeySelector, IComparer<string> firstKeyComparer,
-            Func<Employee, string> secondKeySelector, IComparer<string> secondKeyComparer)
+            CombineKeyComparer combineKeyComparer, CombineKeyComparer keyComparer)
         {
             //bubble sort
             var elements = employees.ToList();
@@ -74,7 +86,7 @@ namespace CSharpAdvanceDesignTests
                 {
                     var element = elements[i];
 
-                    var firstCompareResult = firstKeyComparer.Compare(firstKeySelector(element), firstKeySelector(minElement));
+                    var firstCompareResult = combineKeyComparer.KeyComparer.Compare(combineKeyComparer.KeySelector(element), combineKeyComparer.KeySelector(minElement));
                     if (firstCompareResult < 0)
                     {
                         minElement = element;
@@ -82,7 +94,7 @@ namespace CSharpAdvanceDesignTests
                     }
                     else if (firstCompareResult == 0)
                     {
-                        if (secondKeyComparer.Compare(secondKeySelector(element), secondKeySelector(minElement)) < 0)
+                        if (keyComparer.KeyComparer.Compare(keyComparer.KeySelector(element), keyComparer.KeySelector(minElement)) < 0)
                         {
                             minElement = element;
                             index = i;
