@@ -1,29 +1,12 @@
 ﻿using ExpectedObjects;
 using Lab.Entities;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lab;
 
 namespace CSharpAdvanceDesignTests
 {
-    public class CombineKeyComparer : IComparer<Employee>
-    {
-        public CombineKeyComparer(Func<Employee, string> keySelector, IComparer<string> keyComparer)
-        {
-            KeySelector = keySelector;
-            KeyComparer = keyComparer;
-        }
-
-        private Func<Employee, string> KeySelector { get; set; }
-        private IComparer<string> KeyComparer { get; set; }
-
-        public int Compare(Employee element, Employee minElement)
-        {
-            return KeyComparer.Compare(KeySelector(element), KeySelector(minElement));
-        }
-    }
-
     [TestFixture]
     public class JoeyOrderByTests
     {
@@ -64,8 +47,8 @@ namespace CSharpAdvanceDesignTests
             };
 
             var firstComparer = new CombineKeyComparer(element => element.LastName, Comparer<string>.Default);
-            var secondComparer = new CombineKeyComparer(element1 => element1.FirstName, Comparer<string>.Default);
-            var actual = JoeyOrderByLastName(employees, firstComparer, secondComparer);
+            var secondComparer = new CombineKeyComparer(element => element.FirstName, Comparer<string>.Default);
+            var actual = JoeyOrderByLastName(employees, new ComboComparer(firstComparer, secondComparer));
 
             var expected = new[]
             {
@@ -78,10 +61,8 @@ namespace CSharpAdvanceDesignTests
             expected.ToExpectedObject().ShouldMatch(actual);
         }
 
-        private IEnumerable<Employee> JoeyOrderByLastName(
-            IEnumerable<Employee> employees,
-            IComparer<Employee> firstComparer,
-            IComparer<Employee> secondComparer)
+        private IEnumerable<Employee> JoeyOrderByLastName(IEnumerable<Employee> employees,
+            IComparer<Employee> comboComparer)
         {
             //bubble sort
             var elements = employees.ToList();
@@ -93,19 +74,10 @@ namespace CSharpAdvanceDesignTests
                 {
                     var element = elements[i];
 
-                    var firstCompareResult = firstComparer.Compare(element, minElement);
-                    if (firstCompareResult < 0)
+                    if (comboComparer.Compare(element, minElement) < 0)
                     {
                         minElement = element;
                         index = i;
-                    }
-                    else if (firstCompareResult == 0)
-                    {
-                        if (secondComparer.Compare(element, minElement) < 0)
-                        {
-                            minElement = element;
-                            index = i;
-                        }
                     }
                 }
 
