@@ -36,7 +36,18 @@ namespace CSharpAdvanceDesignTests
 
         private IEnumerable<Card> JoeyTakeWhile(IEnumerable<Card> cards)
         {
-            throw new System.NotImplementedException();
+            
+            foreach (var item in cards)
+            {
+                if (item.Kind != CardKind.Separate)
+                {
+                    yield return item;
+                }
+                else
+                {
+                    yield break;
+                }
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Lab.Entities;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using System;
 using System.Collections.Generic;
 
 namespace CSharpAdvanceDesignTests
@@ -19,9 +18,31 @@ namespace CSharpAdvanceDesignTests
             Assert.IsNull(actual);
         }
 
-        private Employee JoeyFirstOrDefault(IEnumerable<Employee> employees)
+        [Test]
+        public void get_null_when_int_is_0()
         {
-            throw new NotImplementedException();
+            var employees = new List<int>();
+
+            var actual = JoeyFirstOrDefault(employees);
+
+            Assert.AreEqual(0, actual);
+        }
+
+        [Test]
+        public void get_null_when_intNullable_is_0()
+        {
+            var employees = new List<int?>();
+
+            var actual = JoeyFirstOrDefault(employees);
+
+            Assert.IsNull(actual);
+        }
+        private TSource JoeyFirstOrDefault<TSource>(IEnumerable<TSource> employees)
+        {
+            var enumerator = employees.GetEnumerator();
+            return enumerator.MoveNext()
+                ? enumerator.Current
+                : default(TSource);
         }
     }
 }
