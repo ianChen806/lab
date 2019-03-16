@@ -6,7 +6,7 @@ using Lab;
 namespace CSharpAdvanceDesignTests
 {
     [TestFixture]
-    public class JoeySequenceEqualTests
+    public class oeySequenceEqualTests
     {
         [Test]
         public void compare_two_numbers_equal()

@@ -19,4 +19,17 @@ namespace Lab.Entities
             return Tuple.Create(obj.FirstName, obj.LastName).GetHashCode();
         }
     }
+    public sealed class StringComparerThenByFirstName : IComparer<Employee>
+    {
+        public int Compare(Employee x, Employee y)
+        {
+            var comparer = string.Compare(x.LastName, y.LastName, StringComparison.CurrentCultureIgnoreCase);
+            if (comparer < 0)
+            {
+                return string.Compare(x.FirstName, y.FirstName, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            return comparer;
+        }
+    }
 }

@@ -150,17 +150,16 @@ namespace Lab
                     return false;
                 }
 
-                if (comparer.Equals(firstEnumerator.Current, secondEnumerator.Current) == false)
-                {
-                    return false;
-                }
-
                 if (firstFlag == false)
                 {
                     return true;
                 }
+
+                if (comparer.Equals(firstEnumerator.Current, secondEnumerator.Current) == false)
+                {
+                    return false;
+                }
             }
         }
     }
-
 }
