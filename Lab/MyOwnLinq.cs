@@ -91,5 +91,42 @@ namespace Lab
                 ? enumerator.Current
                 : default(TSource);
         }
+
+        public static TSource JoeyLastOrDefault<TSource>(this IEnumerable<TSource> employees)
+        {
+            var enumerator = employees.GetEnumerator();
+            var last = default(TSource);
+            while (enumerator.MoveNext())
+            {
+                var current = enumerator.Current;
+                last = current;
+            }
+
+            return last;
+        }
+
+        public static IEnumerable<Employee> JoeyReverse(this IEnumerable<Employee> employees)
+        {
+            return new Stack<Employee>(employees);
+            //var stack = new Stack<Employee>(employees);
+
+            //var enumerator = stack.GetEnumerator();
+            //while (enumerator.MoveNext())
+            //{
+            //    yield return enumerator.Current;
+            //}
+        }
+
+        public static IEnumerable<IReturn> JoeyZip<TFirst, TSecond, IReturn>(this IEnumerable<TFirst> first,
+            IEnumerable<TSecond> second, Func<TFirst, TSecond, IReturn> selector)
+        {
+            var firstEnumerator = first.GetEnumerator();
+            var secondEnumerator = second.GetEnumerator();
+
+            while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
+            {
+                yield return selector(firstEnumerator.Current, secondEnumerator.Current);
+            }
+        }
     }
 }
