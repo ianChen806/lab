@@ -128,5 +128,38 @@ namespace Lab
                 yield return selector(firstEnumerator.Current, secondEnumerator.Current);
             }
         }
+
+        public static bool JoeySequenceEqual<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second)
+        {
+            return JoeySequenceEqual(first, second, EqualityComparer<TSource>.Default);
+        }
+
+        public static bool JoeySequenceEqual<TSource>(IEnumerable<TSource> first, IEnumerable<TSource> second,
+            IEqualityComparer<TSource> comparer)
+        {
+            var firstEnumerator = first.GetEnumerator();
+            var secondEnumerator = second.GetEnumerator();
+
+            while (true)
+            {
+                var firstFlag = firstEnumerator.MoveNext();
+                var secondFlag = secondEnumerator.MoveNext();
+
+                if (firstFlag != secondFlag)
+                {
+                    return false;
+                }
+
+                if (comparer.Equals(firstEnumerator.Current, secondEnumerator.Current) == false)
+                {
+                    return false;
+                }
+
+                if (firstFlag == false)
+                {
+                    return true;
+                }
+            }
+        }
     }
 }

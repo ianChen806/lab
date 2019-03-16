@@ -46,6 +46,8 @@
     <Compile Include="Entities\CardType.cs" />
     <Compile Include="Entities\Employee.cs" />
     <Compile Include="Entities\Girl.cs" />
+    <Compile Include="Entities\JoeyLastNameFirstNameEqualityComparer.cs" />
+    <Compile Include="Entities\JoeyLastNameFirstNamePhoneEqualityComparer.cs" />
     <Compile Include="Entities\Key.cs" />
     <Compile Include="Entities\Pet.cs" />
     <Compile Include="Entities\Product.cs" />

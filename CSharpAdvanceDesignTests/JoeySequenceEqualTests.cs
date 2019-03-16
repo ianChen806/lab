@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Lab.Entities;
+using NUnit.Framework;
 using System.Collections.Generic;
+using Lab;
 
 namespace CSharpAdvanceDesignTests
 {
@@ -12,7 +14,7 @@ namespace CSharpAdvanceDesignTests
             var first = new List<int> { 3, 2, 1 };
             var second = new List<int> { 3, 2, 1 };
 
-            var actual = JoeySequenceEqual(first, second);
+            var actual = first.JoeySequenceEqual(second);
 
             Assert.IsTrue(actual);
         }
@@ -23,7 +25,7 @@ namespace CSharpAdvanceDesignTests
             var first = new List<int> { 3, 2, 1, 2 };
             var second = new List<int> { 3, 2, 1 };
 
-            var actual = JoeySequenceEqual(first, second);
+            var actual = first.JoeySequenceEqual(second);
 
             Assert.IsFalse(actual);
         }
@@ -34,7 +36,7 @@ namespace CSharpAdvanceDesignTests
             var first = new List<int> { 3, 2, 12 };
             var second = new List<int> { 3, 2, 1 };
 
-            var actual = JoeySequenceEqual(first, second);
+            var actual = first.JoeySequenceEqual(second);
 
             Assert.IsFalse(actual);
         }
@@ -45,7 +47,7 @@ namespace CSharpAdvanceDesignTests
             var first = new List<int> { 3, 2, 1 };
             var second = new List<int> { 3, 2, 1, 0 };
 
-            var actual = JoeySequenceEqual(first, second);
+            var actual = first.JoeySequenceEqual(second);
 
             Assert.IsFalse(actual);
         }
@@ -56,35 +58,9 @@ namespace CSharpAdvanceDesignTests
             var first = new List<int> { };
             var second = new List<int> { };
 
-            var actual = JoeySequenceEqual(first, second);
+            var actual = first.JoeySequenceEqual(second);
 
             Assert.IsTrue(actual);
-        }
-        private bool JoeySequenceEqual(IEnumerable<int> first, IEnumerable<int> second)
-        {
-            var firstEnumerator = first.GetEnumerator();
-            var secondEnumerator = second.GetEnumerator();
-
-            while (true)
-            {
-                var firstFlag = firstEnumerator.MoveNext();
-                var secondFlag = secondEnumerator.MoveNext();
-
-                if (firstFlag != secondFlag)
-                {
-                    return false;
-                }
-
-                if (firstEnumerator.Current != secondEnumerator.Current)
-                {
-                    return false;
-                }
-
-                if (firstFlag == false)
-                {
-                    return true;
-                }
-            }
         }
     }
 }
