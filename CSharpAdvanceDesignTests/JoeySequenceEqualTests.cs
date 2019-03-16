@@ -62,5 +62,32 @@ namespace CSharpAdvanceDesignTests
 
             Assert.IsTrue(actual);
         }
+
+
+        [Test]
+        public void two_employees_sequence_equal()
+        {
+            var first = new List<Employee>
+            {
+                new Employee() {FirstName = "Joey", LastName = "Chen", Phone = "123"},
+                new Employee() {FirstName = "Tom", LastName = "Li", Phone = "456"},
+                new Employee() {FirstName = "David", LastName = "Wang", Phone = "789"},
+            };
+
+
+            var second = new List<Employee>
+            {
+                new Employee() {FirstName = "Joey", LastName = "Chen", Phone = "123"},
+                new Employee() {FirstName = "Tom", LastName = "Li", Phone = "123"},
+                new Employee() {FirstName = "David", LastName = "Wang", Phone = "123"},
+            };
+
+
+            var actual = first.JoeySequenceEqual(second, new JoeyLastNameFirstNameEqualityComparer());
+
+            Assert.IsTrue(actual);
+        }
     }
+
+
 }
