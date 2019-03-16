@@ -1,4 +1,5 @@
-﻿using Lab.Entities;
+﻿using Lab;
+using Lab.Entities;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace CSharpAdvanceDesignTests
         {
             var employees = new List<Employee>();
 
-            var actual = JoeyFirstOrDefault(employees);
+            var actual = employees.JoeyFirstOrDefault();
 
             Assert.IsNull(actual);
         }
@@ -23,7 +24,7 @@ namespace CSharpAdvanceDesignTests
         {
             var employees = new List<int>();
 
-            var actual = JoeyFirstOrDefault(employees);
+            var actual = employees.JoeyFirstOrDefault();
 
             Assert.AreEqual(0, actual);
         }
@@ -33,16 +34,9 @@ namespace CSharpAdvanceDesignTests
         {
             var employees = new List<int?>();
 
-            var actual = JoeyFirstOrDefault(employees);
+            var actual = employees.JoeyFirstOrDefault();
 
             Assert.IsNull(actual);
-        }
-        private TSource JoeyFirstOrDefault<TSource>(IEnumerable<TSource> employees)
-        {
-            var enumerator = employees.GetEnumerator();
-            return enumerator.MoveNext()
-                ? enumerator.Current
-                : default(TSource);
         }
     }
 }
